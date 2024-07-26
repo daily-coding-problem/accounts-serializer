@@ -4,7 +4,7 @@ This program is used to produce the secret `TEST_ACCOUNTS` used by the [chatgpt-
 
 ```json
 {
-	"test@ibm.com": {
+	"test@company.com": {
 		"password": "some password",
 		"secret": "some secret"
 	}

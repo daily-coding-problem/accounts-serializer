@@ -1,10 +1,10 @@
-FROM python:3.11.0-alpine3.17
+FROM python:3.12.0-alpine3.17
 
 WORKDIR /app
 
 COPY . .
 
-RUN apk add --no-cache --virtual .build-deps gcc musl-dev \
+RUN apk add --no-cache --virtual .build-deps gcc musl-dev libffi-dev \
     && pip install poetry \
     && poetry config virtualenvs.create false \
     && poetry install --only main --no-interaction --no-ansi \

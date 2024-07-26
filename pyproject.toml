@@ -1,13 +1,12 @@
 [tool.poetry]
-name = "accountsserializer"
-version = "0.1.0"
-description = ""
+name = "accounts_serializer"
+version = "1.0.0"
+description = "A program used to produce the secret TEST_ACCOUNTS used by the chatgpt-scraper."
 authors = ["Nicholas Adamou <nicholasadamouemail@gmail.com>"]
 readme = "README.md"
 
 [tool.poetry.dependencies]
-python = "^3.11"
-
+python = "^3.12"
 
 [build-system]
 requires = ["poetry-core"]

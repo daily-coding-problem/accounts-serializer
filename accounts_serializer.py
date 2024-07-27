@@ -23,11 +23,11 @@ def main():
     parser.add_argument("--emails", nargs='+', required=True, help="User emails separated by space.")
     parser.add_argument("--passwords", nargs='+', required=True, help="User passwords separated by space.")
     parser.add_argument("--secrets", nargs='+', required=True, help="User secrets separated by space.")
-
+    parser.add_argument("--providers", nargs="+", required=True, help="User authentication provider separated by space.")
     args = parser.parse_args()
 
-    if not (len(args.emails) == len(args.passwords) == len(args.secrets)):
-        raise ValueError("The number of emails, passwords, and secrets should match.")
+    if not (len(args.emails) == len(args.passwords) == len(args.secrets) == len(args.providers)):
+        raise ValueError("The number of emails, passwords, secrets, and providers should match.")
 
     for email in args.emails:
         validate_email(email)
@@ -45,8 +45,8 @@ def main():
 
     print_dictionary("Current data:", accounts)
 
-    for email, password, secret in zip(args.emails, args.passwords, args.secrets):
-        accounts[email] = {'password': password, 'secret': secret}
+    for email, password, secret, provider in zip(args.emails, args.passwords, args.secrets, args.providers):
+        accounts[email] = {'password': password, 'secret': secret, 'provider': provider}
 
     serialized_data = json.dumps(accounts).encode('utf-8')
 

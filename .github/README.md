@@ -7,7 +7,7 @@ This program is used to produce the secret `TEST_ACCOUNTS` used by the [chatgpt-
 	"test@company.com": {
 		"password": "some password",
 		"secret": "some secret",
-        	"provider": "basic"
+		"provider": "basic"
 	}
 }
 ```

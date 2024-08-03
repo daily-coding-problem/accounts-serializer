@@ -1,13 +1,19 @@
 # Accounts Serializer
+![Docker](https://img.shields.io/badge/-Docker-2496ED?style=flat-square&logo=Docker&logoColor=white)
+![Linux](https://img.shields.io/badge/-Linux-FCC624?style=flat-square&logo=linux&logoColor=black)
+![Python](https://img.shields.io/badge/-Python-3776AB?style=flat-square&logo=python&logoColor=white)
 
 This program is used to produce the secret `TEST_ACCOUNTS` used by the [chatgpt-scraper](https://github.com/daily-coding-problem/chatgpt-scraper). `TEST_ACCOUNTS` is a dictionary of the form:
 
 ```json
 {
 	"test@company.com": {
+		"provider": "basic",
 		"password": "some password",
-		"secret": "some secret",
-		"provider": "basic"
+		"secret": {
+			"google": "some secret",
+			"chatgpt": "some secret"
+		}
 	}
 }
 ```
@@ -39,14 +45,55 @@ poetry install
 
 ## Usage
 
+To use the `accounts_serializer.py` script, you can pass the emails, passwords, providers, and secrets as arguments. Here's an example:
+
 ```shell
-poetry run python accounts_serializer.py --emails email1@email.com email2@email.com --passwords pass1 pass2 --secrets secret1 secret2
+poetry run python accounts_serializer.py \
+    --emails test@company.com user@anothercompany.com \
+    --passwords password123 userpassword456 \
+    --providers basic basic \
+    --secrets google:google-secret-abc chatgpt:chatgpt-secret-xyz github:github-secret-123 aws:aws-secret-789
 ```
 
+### Example Output
+
+Running the above command will produce a JSON structure like the following:
+
+```json
+{
+    "test@company.com": {
+        "provider": "basic",
+        "password": "password123",
+        "secret": {
+            "google": "google-secret-abc",
+            "chatgpt": "chatgpt-secret-xyz"
+        }
+    },
+    "user@anothercompany.com": {
+        "provider": "basic",
+        "password": "userpassword456",
+        "secret": {
+            "github": "github-secret-123",
+            "aws": "aws-secret-789"
+        }
+    }
+}
+```
+
+This JSON structure is then base64 encoded to be used as the `TEST_ACCOUNTS` environment variable.
+
 ## Docker
+
+You can also build and run the script using Docker:
 
 ```shell
 docker build -t accounts_serializer .
 docker run --rm --env-file .env accounts_serializer --help
-docker run --rm --env-file .env accounts_serializer --emails email1 email2 --passwords pass1 pass2 --secrets secret1 secret2
+docker run --rm --env-file .env accounts_serializer \
+    --emails test@company.com user@anothercompany.com \
+    --passwords password123 userpassword456 \
+    --providers basic basic \
+    --secrets google:google-secret-abc chatgpt:chatgpt-secret-xyz github:github-secret-123 aws:aws-secret-789
 ```
+
+This will allow you to generate the `TEST_ACCOUNTS` environment variable in a consistent and reproducible way.

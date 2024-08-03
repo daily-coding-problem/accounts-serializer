@@ -6,8 +6,7 @@ import argparse
 
 
 def validate_email(email):
-    """Check if email is valid."""
-
+    """Check if the email is valid."""
     if not re.match(r"[^@]+@[^@]+\.[^@]+", email):
         raise ValueError(f"Invalid email format for {email}.")
 
@@ -22,12 +21,12 @@ def main():
     parser = argparse.ArgumentParser(description="Add multiple users to TEST_ACCOUNTS environment variable.")
     parser.add_argument("--emails", nargs='+', required=True, help="User emails separated by space.")
     parser.add_argument("--passwords", nargs='+', required=True, help="User passwords separated by space.")
-    parser.add_argument("--secrets", nargs='+', required=True, help="User secrets separated by space.")
-    parser.add_argument("--providers", nargs="+", required=True, help="User authentication provider separated by space.")
+    parser.add_argument("--providers", nargs='+', required=True, help="User authentication providers separated by space.")
+    parser.add_argument("--secrets", nargs='+', required=True, help="User secrets separated by space, formatted as 'provider:secret'.")
     args = parser.parse_args()
 
-    if not (len(args.emails) == len(args.passwords) == len(args.secrets) == len(args.providers)):
-        raise ValueError("The number of emails, passwords, secrets, and providers should match.")
+    if not (len(args.emails) == len(args.passwords) == len(args.providers)):
+        raise ValueError("The number of emails, passwords, and providers should match.")
 
     for email in args.emails:
         validate_email(email)
@@ -45,8 +44,17 @@ def main():
 
     print_dictionary("Current data:", accounts)
 
-    for email, password, secret, provider in zip(args.emails, args.passwords, args.secrets, args.providers):
-        accounts[email] = {'password': password, 'secret': secret, 'provider': provider}
+    for email, password, provider in zip(args.emails, args.passwords, args.providers):
+        if email not in accounts:
+            accounts[email] = {'provider': provider, 'password': password, 'secret': {}}
+        else:
+            accounts[email]['provider'] = provider
+            accounts[email]['password'] = password
+
+        # Handle secrets
+        for secret in args.secrets:
+            provider_name, secret_value = secret.split(':')
+            accounts[email]['secret'][provider_name] = secret_value
 
     serialized_data = json.dumps(accounts).encode('utf-8')
 
